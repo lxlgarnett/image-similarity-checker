@@ -8,7 +8,14 @@ from collections import defaultdict
 
 
 def find_images(directory: str):
-    """Finds all image files in a directory recursively."""
+    """Finds all image files in a directory recursively.
+
+    Args:
+        directory: The path to the directory to search.
+
+    Yields:
+        The full path to each image file found.
+    """
     image_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
     for root, _, files in os.walk(directory):
         for file in files:
@@ -17,6 +24,25 @@ def find_images(directory: str):
 
 
 def phash_hex(image: Image.Image, hash_size: int = 8, highfreq_factor: int = 4) -> str:
+    """Computes the perceptual hash (pHash) of an image.
+
+    The hash is based on the Discrete Cosine Transform (DCT) of the image.
+    It is a robust fingerprint that can be used to compare images for similarity.
+
+    Args:
+        image: The PIL.Image object to hash.
+        hash_size: The size of the hash to generate. A larger size means a more
+            detailed hash, but it may be more sensitive to small changes.
+        highfreq_factor: The factor by which to scale the image size before
+            applying the DCT. A higher factor includes more high-frequency
+            components.
+
+    Returns:
+        A hexadecimal string representing the perceptual hash of the image.
+
+    Raises:
+        ValueError: If hash_size is less than 2.
+    """
     if hash_size < 2:
         raise ValueError("hash_size must be >= 2")
 
@@ -46,7 +72,15 @@ def hex_to_binary(hex_string: str) -> str:
 
 
 def hamming_distance(s1: str, s2: str) -> int:
-    """Calculates the Hamming distance between two strings."""
+    """Calculates the Hamming distance between two strings.
+
+    Args:
+        s1: The first string.
+        s2: The second string.
+
+    Returns:
+        The number of positions at which the characters are different.
+    """
     return sum(c1 != c2 for c1, c2 in zip(s1, s2))
 
 
@@ -125,9 +159,9 @@ def main():
             group_count += 1
             # The root image of the group
             root_hash_binary = binary_hashes[root]
-            
+
             print(f"\nGroup {group_count} (Root: {root}):")
-            
+
             # Sort paths for consistent output
             for path in sorted(group_paths):
                 path_hash_binary = binary_hashes[path]
