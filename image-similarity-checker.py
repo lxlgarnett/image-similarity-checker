@@ -18,19 +18,32 @@ DEFAULT_IMAGE_EXTENSIONS = [
 ]
 
 
-def find_images(directory: str, extensions=None):
+def find_images(directory: str, extensions=None, exclude_paths=None):
     """Finds all image files in a directory recursively.
 
     Args:
         directory: The path to the directory to search.
         extensions: Iterable of lowercase file extensions to include (e.g.,
             [".jpg", ".png"]). Defaults to common image formats.
+        exclude_paths: Iterable of absolute directory paths to skip while walking
+            the tree.
 
     Yields:
         The full path to each image file found.
     """
     image_extensions = extensions or DEFAULT_IMAGE_EXTENSIONS
-    for root, _, files in os.walk(directory):
+    excluded = set(exclude_paths or [])
+
+    for root, dirs, files in os.walk(directory):
+        dirs[:] = [
+            d
+            for d in dirs
+            if not any(
+                os.path.commonpath([os.path.join(root, d), exclude_dir])
+                == exclude_dir
+                for exclude_dir in excluded
+            )
+        ]
         for file in files:
             if any(file.lower().endswith(ext) for ext in image_extensions):
                 yield os.path.join(root, file)
@@ -145,9 +158,19 @@ def main():
         "--output",
         help="Optional file path to save the similarity report alongside console output.",
     )
+    parser.add_argument(
+        "--exclude",
+        nargs="+",
+        metavar="PATH",
+        help=(
+            "One or more directories to skip while searching for images. "
+            "Paths may be absolute or relative to the target directory."
+        ),
+    )
     args = parser.parse_args()
 
-    if not os.path.isdir(args.directory):
+    target_directory = os.path.abspath(args.directory)
+    if not os.path.isdir(target_directory):
         print(f"Error: Directory not found at '{args.directory}'")
         return
 
@@ -174,6 +197,17 @@ def main():
     else:
         extensions = None
 
+    exclude_paths = []
+    if args.exclude:
+        for path in args.exclude:
+            abs_path = (
+                path if os.path.isabs(path) else os.path.abspath(os.path.join(target_directory, path))
+            )
+            if not os.path.isdir(abs_path):
+                print(f"Error: Exclude directory not found at '{path}'")
+                return
+            exclude_paths.append(abs_path)
+
     report_lines = []
 
     def log(line: str = ""):
@@ -181,7 +215,13 @@ def main():
         report_lines.append(line)
 
     log("Finding images...")
-    image_paths = list(find_images(args.directory, extensions=extensions))
+    image_paths = list(
+        find_images(
+            target_directory,
+            extensions=extensions,
+            exclude_paths=exclude_paths,
+        )
+    )
     if not image_paths:
         log("No images found.")
         return
