@@ -208,6 +208,20 @@ def main():
                 return
             exclude_paths.append(abs_path)
 
+    output_path = None
+    if args.output:
+        output_path = os.path.abspath(args.output)
+        if os.path.isdir(output_path):
+            print("Error: Output path refers to a directory; please provide a file path.")
+            return
+        output_dir = os.path.dirname(output_path)
+        if output_dir and not os.path.exists(output_dir):
+            try:
+                os.makedirs(output_dir, exist_ok=True)
+            except OSError as e:
+                print(f"Error creating output directory '{output_dir}': {e}")
+                return
+
     report_lines = []
 
     def log(line: str = ""):
@@ -306,13 +320,13 @@ def main():
         else:
             log("No unique images found.")
 
-    if args.output:
+    if output_path:
         try:
-            with open(args.output, "w", encoding="utf-8") as f:
+            with open(output_path, "w", encoding="utf-8") as f:
                 f.write("\n".join(report_lines))
-            log(f"\nReport saved to {args.output}")
+            log(f"\nReport saved to {output_path}")
         except OSError as e:
-            log(f"\nError writing report to {args.output}: {e}")
+            log(f"\nError writing report to {output_path}: {e}")
 
 
 if __name__ == "__main__":
