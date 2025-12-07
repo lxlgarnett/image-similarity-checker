@@ -124,6 +124,11 @@ def main():
             "Defaults to common image formats."
         ),
     )
+    parser.add_argument(
+        "--show-unique",
+        action="store_true",
+        help="Also list images that did not meet the similarity threshold.",
+    )
     args = parser.parse_args()
 
     if not os.path.isdir(args.directory):
@@ -224,6 +229,20 @@ def main():
 
     if not similar_groups_found:
         print("No similar images found with the current threshold.")
+
+    if args.show_unique:
+        unique_images = [
+            path
+            for paths in groups.values()
+            for path in paths
+            if len(paths) == 1
+        ]
+        print("\n--- Unique Images ---")
+        if unique_images:
+            for path in sorted(unique_images):
+                print(f"- {path}")
+        else:
+            print("No unique images found.")
 
 
 if __name__ == "__main__":
