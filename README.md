@@ -61,6 +61,17 @@ You can adjust the similarity sensitivity using the `--threshold` flag. This val
 python image-similarity-checker.py /path/to/your/images --threshold 3
 ```
 
+Additional configuration flags allow you to control how the perceptual hash is generated:
+
+-   `--hash-size`: Size of the perceptual hash. Larger values capture more detail but are more sensitive to visual changes. Must be at least 2. (Default: `8`)
+-   `--highfreq-factor`: Factor used to scale the image before applying the DCT. Higher values include more high-frequency components. Must be at least 1. (Default: `4`)
+
+Example with custom hash parameters:
+
+```bash
+python image-similarity-checker.py /path/to/your/images --hash-size 12 --highfreq-factor 5
+```
+
 ## Example Output
 
 ```

@@ -96,6 +96,24 @@ def main():
         default=5,
         help="The Hamming distance threshold for similarity. Default is 5.",
     )
+    parser.add_argument(
+        "--hash-size",
+        type=int,
+        default=8,
+        help=(
+            "The size of the perceptual hash. Larger values capture more detail but are "
+            "more sensitive to changes. Must be at least 2. Default is 8."
+        ),
+    )
+    parser.add_argument(
+        "--highfreq-factor",
+        type=int,
+        default=4,
+        help=(
+            "Factor to scale the image before DCT is applied. Higher values include more "
+            "high-frequency components. Must be at least 1. Default is 4."
+        ),
+    )
     args = parser.parse_args()
 
     if not os.path.isdir(args.directory):
@@ -104,6 +122,14 @@ def main():
 
     if args.threshold < 0:
         print("Error: Threshold must be a non-negative integer.")
+        return
+
+    if args.hash_size < 2:
+        print("Error: hash_size must be at least 2.")
+        return
+
+    if args.highfreq_factor < 1:
+        print("Error: highfreq_factor must be at least 1.")
         return
 
     print("Finding images...")
@@ -117,7 +143,9 @@ def main():
     for path in image_paths:
         try:
             image = Image.open(path)
-            hashes[path] = phash_hex(image)
+            hashes[path] = phash_hex(
+                image, hash_size=args.hash_size, highfreq_factor=args.highfreq_factor
+            )
         except Exception as e:
             print(f"Could not process {path}: {e}")
 
