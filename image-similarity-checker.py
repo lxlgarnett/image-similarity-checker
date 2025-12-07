@@ -7,16 +7,18 @@ from itertools import combinations
 from collections import defaultdict
 
 
-def find_images(directory: str):
+def find_images(directory: str, extensions=None):
     """Finds all image files in a directory recursively.
 
     Args:
         directory: The path to the directory to search.
+        extensions: Iterable of lowercase file extensions to include (e.g.,
+            [".jpg", ".png"]). Defaults to common image formats.
 
     Yields:
         The full path to each image file found.
     """
-    image_extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
+    image_extensions = extensions or [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
     for root, _, files in os.walk(directory):
         for file in files:
             if any(file.lower().endswith(ext) for ext in image_extensions):
@@ -114,6 +116,14 @@ def main():
             "high-frequency components. Must be at least 1. Default is 4."
         ),
     )
+    parser.add_argument(
+        "--extensions",
+        nargs="+",
+        help=(
+            "Space-separated list of file extensions to include (e.g., .jpg .png). "
+            "Defaults to common image formats."
+        ),
+    )
     args = parser.parse_args()
 
     if not os.path.isdir(args.directory):
@@ -132,8 +142,19 @@ def main():
         print("Error: highfreq_factor must be at least 1.")
         return
 
+    if args.extensions:
+        normalized_exts = []
+        for ext in args.extensions:
+            if not ext.startswith("."):
+                print("Error: Extensions must start with a dot (e.g., .jpg)")
+                return
+            normalized_exts.append(ext.lower())
+        extensions = normalized_exts
+    else:
+        extensions = None
+
     print("Finding images...")
-    image_paths = list(find_images(args.directory))
+    image_paths = list(find_images(args.directory, extensions=extensions))
     if not image_paths:
         print("No images found.")
         return
