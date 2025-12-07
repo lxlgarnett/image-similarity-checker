@@ -1,10 +1,11 @@
 import argparse
-import os
-from PIL import Image
-import numpy as np
-import scipy.fftpack
-from itertools import combinations
 from collections import defaultdict
+from itertools import combinations
+import os
+
+import numpy as np
+from PIL import Image
+import scipy.fftpack
 
 DEFAULT_IMAGE_EXTENSIONS = [
     ".jpg",
