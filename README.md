@@ -4,7 +4,7 @@ A Python script to find and group similar images within a directory using a perc
 
 ## Features
 
-- **Recursive Search:** Scans a directory and all its subdirectories for images (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.gif`).
+- **Recursive Search:** Scans a directory and all its subdirectories for images (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.gif`, `.webp`, `.tiff`, `.tif`).
 - **Perceptual Hashing:** Generates a robust "fingerprint" for each image that represents its visual content.
 - **Similarity Detection:** Compares all images against each other using Hamming distance to find images that are visually similar.
 - **Configurable Threshold:** Allows you to set the sensitivity of the similarity detection with a `--threshold` flag.
@@ -65,7 +65,7 @@ Additional configuration flags allow you to control how the perceptual hash is g
 
 -   `--hash-size`: Size of the perceptual hash. Larger values capture more detail but are more sensitive to visual changes. Must be at least 2. (Default: `8`)
 -   `--highfreq-factor`: Factor used to scale the image before applying the DCT. Higher values include more high-frequency components. Must be at least 1. (Default: `4`)
--   `--extensions`: Space-separated list of file extensions to include (e.g., `.jpg .png`). Defaults to common image formats.
+-   `--extensions`: Space-separated list of file extensions to include (e.g., `.jpg .png`). Defaults to common image formats (`.jpg`, `.jpeg`, `.png`, `.bmp`, `.gif`, `.webp`, `.tiff`, `.tif`).
 -   `--show-unique`: Include a section listing images that did not meet the similarity threshold.
 -   `--output`: Optional path to save the similarity report to a file while also printing to the console.
 

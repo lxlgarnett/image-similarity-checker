@@ -6,6 +6,17 @@ import scipy.fftpack
 from itertools import combinations
 from collections import defaultdict
 
+DEFAULT_IMAGE_EXTENSIONS = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".bmp",
+    ".gif",
+    ".webp",
+    ".tiff",
+    ".tif",
+]
+
 
 def find_images(directory: str, extensions=None):
     """Finds all image files in a directory recursively.
@@ -18,7 +29,7 @@ def find_images(directory: str, extensions=None):
     Yields:
         The full path to each image file found.
     """
-    image_extensions = extensions or [".jpg", ".jpeg", ".png", ".bmp", ".gif"]
+    image_extensions = extensions or DEFAULT_IMAGE_EXTENSIONS
     for root, _, files in os.walk(directory):
         for file in files:
             if any(file.lower().endswith(ext) for ext in image_extensions):
@@ -121,7 +132,8 @@ def main():
         nargs="+",
         help=(
             "Space-separated list of file extensions to include (e.g., .jpg .png). "
-            "Defaults to common image formats."
+            "Defaults to common image formats: "
+            + ", ".join(DEFAULT_IMAGE_EXTENSIONS)
         ),
     )
     parser.add_argument(
