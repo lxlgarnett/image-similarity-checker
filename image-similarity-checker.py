@@ -129,6 +129,10 @@ def main():
         action="store_true",
         help="Also list images that did not meet the similarity threshold.",
     )
+    parser.add_argument(
+        "--output",
+        help="Optional file path to save the similarity report alongside console output.",
+    )
     args = parser.parse_args()
 
     if not os.path.isdir(args.directory):
@@ -158,24 +162,30 @@ def main():
     else:
         extensions = None
 
-    print("Finding images...")
+    report_lines = []
+
+    def log(line: str = ""):
+        print(line)
+        report_lines.append(line)
+
+    log("Finding images...")
     image_paths = list(find_images(args.directory, extensions=extensions))
     if not image_paths:
-        print("No images found.")
+        log("No images found.")
         return
 
-    print(f"Found {len(image_paths)} images. Calculating hashes...")
+    log(f"Found {len(image_paths)} images. Calculating hashes...")
     hashes = {}
     for path in image_paths:
         try:
-            image = Image.open(path)
-            hashes[path] = phash_hex(
-                image, hash_size=args.hash_size, highfreq_factor=args.highfreq_factor
-            )
+            with Image.open(path) as image:
+                hashes[path] = phash_hex(
+                    image, hash_size=args.hash_size, highfreq_factor=args.highfreq_factor
+                )
         except Exception as e:
-            print(f"Could not process {path}: {e}")
+            log(f"Could not process {path}: {e}")
 
-    print("Comparing images...")
+    log("Comparing images...")
     # Parent pointer for Union-Find
     parent = {path: path for path in hashes}
     # Pre-calculate binary hashes to avoid repeated conversions during comparisons
@@ -206,7 +216,7 @@ def main():
         root = find_set(path)
         groups[root].append(path)
 
-    print("\n--- Similarity Report ---")
+    log("\n--- Similarity Report ---")
     similar_groups_found = False
     group_count = 0
     for root in groups:
@@ -217,7 +227,7 @@ def main():
             # The root image of the group
             root_hash_binary = binary_hashes[root]
 
-            print(f"\nGroup {group_count} (Root: {root}):")
+            log(f"\nGroup {group_count} (Root: {root}):")
 
             # Sort paths for consistent output
             for path in sorted(group_paths):
@@ -225,10 +235,10 @@ def main():
                 distance = hamming_distance(root_hash_binary, path_hash_binary)
                 hash_length = len(root_hash_binary)
                 similarity = 100 - (distance / hash_length * 100)
-                print(f"- {similarity:.2f}% similar: {path}")
+                log(f"- {similarity:.2f}% similar: {path}")
 
     if not similar_groups_found:
-        print("No similar images found with the current threshold.")
+        log("No similar images found with the current threshold.")
 
     if args.show_unique:
         unique_images = [
@@ -237,12 +247,20 @@ def main():
             for path in paths
             if len(paths) == 1
         ]
-        print("\n--- Unique Images ---")
+        log("\n--- Unique Images ---")
         if unique_images:
             for path in sorted(unique_images):
-                print(f"- {path}")
+                log(f"- {path}")
         else:
-            print("No unique images found.")
+            log("No unique images found.")
+
+    if args.output:
+        try:
+            with open(args.output, "w", encoding="utf-8") as f:
+                f.write("\n".join(report_lines))
+            log(f"\nReport saved to {args.output}")
+        except OSError as e:
+            log(f"\nError writing report to {args.output}: {e}")
 
 
 if __name__ == "__main__":

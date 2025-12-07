@@ -67,6 +67,7 @@ Additional configuration flags allow you to control how the perceptual hash is g
 -   `--highfreq-factor`: Factor used to scale the image before applying the DCT. Higher values include more high-frequency components. Must be at least 1. (Default: `4`)
 -   `--extensions`: Space-separated list of file extensions to include (e.g., `.jpg .png`). Defaults to common image formats.
 -   `--show-unique`: Include a section listing images that did not meet the similarity threshold.
+-   `--output`: Optional path to save the similarity report to a file while also printing to the console.
 
 Example with custom hash parameters:
 
