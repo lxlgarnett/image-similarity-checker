@@ -102,6 +102,10 @@ def main():
         print(f"Error: Directory not found at '{args.directory}'")
         return
 
+    if args.threshold < 0:
+        print("Error: Threshold must be a non-negative integer.")
+        return
+
     print("Finding images...")
     image_paths = list(find_images(args.directory))
     if not image_paths:
@@ -120,6 +124,8 @@ def main():
     print("Comparing images...")
     # Parent pointer for Union-Find
     parent = {path: path for path in hashes}
+    # Pre-calculate binary hashes to avoid repeated conversions during comparisons
+    binary_hashes = {path: hex_to_binary(h) for path, h in hashes.items()}
 
     def find_set(path):
         if parent[path] == path:
@@ -135,8 +141,8 @@ def main():
 
     # Compare all pairs of images
     for path1, path2 in combinations(hashes.keys(), 2):
-        hash1 = hex_to_binary(hashes[path1])
-        hash2 = hex_to_binary(hashes[path2])
+        hash1 = binary_hashes[path1]
+        hash2 = binary_hashes[path2]
         if hamming_distance(hash1, hash2) <= args.threshold:
             unite_sets(path1, path2)
 
@@ -149,9 +155,6 @@ def main():
     print("\n--- Similarity Report ---")
     similar_groups_found = False
     group_count = 0
-    # Pre-calculate binary hashes to avoid re-computation
-    binary_hashes = {path: hex_to_binary(h) for path, h in hashes.items()}
-
     for root in groups:
         group_paths = groups[root]
         if len(group_paths) > 1:
