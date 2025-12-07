@@ -46,7 +46,16 @@ python image-similarity-checker.py /path/to/your/image_directory
 
 ### Options
 
-You can adjust the similarity sensitivity using the `--threshold` flag. A lower threshold means the images must be more similar to be grouped together. The default threshold is `5`. A threshold of `0` will only group identical images.
+You can adjust the similarity sensitivity using the `--threshold` flag. This value represents the maximum **Hamming distance** allowed between two perceptual hashes for them to be considered "similar."
+
+-   **Hamming Distance:** In the context of pHash, Hamming distance quantifies the number of bits that differ between two image hashes. A smaller Hamming distance indicates greater similarity.
+-   **Impact of Threshold:**
+    *   A **lower threshold** (e.g., `0` to `5`) means images must be very close visually to be grouped. `0` will only group identical images.
+    *   A **higher threshold** (e.g., `10` or more) will group images with more noticeable visual differences.
+    *   Small variations like minor resizing, cropping, or compression often result in Hamming distances between `1` and `5`.
+-   **Choosing a Threshold:** The optimal threshold depends on your specific needs and the types of image variations you want to detect. Experimentation is recommended. A common starting point for finding near-duplicates is a threshold of `5`.
+
+**Default Threshold:** The default value for `--threshold` is `5`.
 
 ```bash
 python image-similarity-checker.py /path/to/your/images --threshold 3
