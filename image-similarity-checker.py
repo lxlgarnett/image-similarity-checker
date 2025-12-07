@@ -306,19 +306,26 @@ def main():
     if not similar_groups_found:
         log("No similar images found with the current threshold.")
 
+    all_images_count = len(hashes)
+    unique_images = [
+        path
+        for paths in groups.values()
+        for path in paths
+        if len(paths) == 1
+    ]
+
     if args.show_unique:
-        unique_images = [
-            path
-            for paths in groups.values()
-            for path in paths
-            if len(paths) == 1
-        ]
         log("\n--- Unique Images ---")
         if unique_images:
             for path in sorted(unique_images):
                 log(f"- {path}")
         else:
             log("No unique images found.")
+
+    log("\n--- Summary ---")
+    log(f"Total images processed: {all_images_count}")
+    log(f"Similar groups found: {group_count}")
+    log(f"Unique images: {len(unique_images)}")
 
     if output_path:
         try:

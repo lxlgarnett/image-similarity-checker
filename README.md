@@ -70,6 +70,7 @@ Additional configuration flags allow you to control how the perceptual hash is g
 -   `--output`: Optional path to save the similarity report to a file while also printing to the console. Parent directories are
     created automatically when needed, and the path must refer to a file (not a directory).
 -   `--exclude`: One or more directories to skip when searching for images. Paths can be absolute or relative to the target directory.
+-   The report always concludes with a summary showing how many images were processed, how many similar groups were found, and how many images were unique.
 
 Example with custom hash parameters:
 
