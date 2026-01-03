@@ -1,5 +1,8 @@
 # Image Similarity Checker
 
+![Pylint](https://github.com/lxlgarnett/image-similarity-checker/actions/workflows/pylint.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 A Python script to find and group similar images within a directory using a perceptual hashing algorithm (pHash). This tool is useful for identifying duplicate or near-duplicate images in a large collection.
 
 ## Features
