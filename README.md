@@ -2,6 +2,10 @@
 
 ![Pylint](https://github.com/lxlgarnett/image-similarity-checker/actions/workflows/pylint.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10-blue)
+![Repo Size](https://img.shields.io/github/repo-size/lxlgarnett/image-similarity-checker)
+![Last Commit](https://img.shields.io/github/last-commit/lxlgarnett/image-similarity-checker)
+![Issues](https://img.shields.io/github/issues/lxlgarnett/image-similarity-checker)
 
 A Python script to find and group similar images within a directory using a perceptual hashing algorithm (pHash). This tool is useful for identifying duplicate or near-duplicate images in a large collection.
 
