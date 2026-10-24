@@ -2,7 +2,7 @@
 
 ![Pylint](https://github.com/lxlgarnett/image-similarity-checker/actions/workflows/pylint.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)
+![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 ![Repo Size](https://img.shields.io/github/repo-size/lxlgarnett/image-similarity-checker)
 ![Last Commit](https://img.shields.io/github/last-commit/lxlgarnett/image-similarity-checker)
 ![Issues](https://img.shields.io/github/issues/lxlgarnett/image-similarity-checker)
