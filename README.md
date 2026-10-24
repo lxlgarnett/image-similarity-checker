@@ -2,7 +2,7 @@
 
 ![Pylint](https://github.com/lxlgarnett/image-similarity-checker/actions/workflows/pylint.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10-blue)
+![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)
 ![Repo Size](https://img.shields.io/github/repo-size/lxlgarnett/image-similarity-checker)
 ![Last Commit](https://img.shields.io/github/last-commit/lxlgarnett/image-similarity-checker)
 ![Issues](https://img.shields.io/github/issues/lxlgarnett/image-similarity-checker)
@@ -20,20 +20,30 @@ A Python script to find and group similar images within a directory using a perc
 
 ## Requirements
 
-- Python 3.6+
-- Dependencies listed in `requirements.txt` (`Pillow`, `numpy`, `scipy`)
+- Python 3.11+
+- Dependencies listed in `requirements.txt` (`Pillow>=13.0.0`, `numpy`, `scipy`)
+
+> **Security note:** Pillow 13.0.0 fixes several vulnerabilities that can be triggered by crafted image files
+> (e.g. CVE-2026-96639, CVE-2026-112398, CVE-2026-112403). Because this tool opens every image in the scanned
+> directory, keep Pillow at 13.0.0 or later, especially when scanning images from untrusted sources.
+> Pillow 13 requires Python 3.11+, which is why older Python versions are no longer supported.
+>
+> If you installed an earlier version of this project, upgrade with:
+> ```bash
+> pip install -U -r requirements.txt
+> ```
 
 ## Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/image-similarity-checker.git
+    git clone https://github.com/lxlgarnett/image-similarity-checker.git
     cd image-similarity-checker
     ```
 
 2.  **Create and activate a virtual environment (recommended):**
     ```bash
-    python3 -m venv venv
+    python3 -m venv venv  # make sure `python3 --version` is 3.11 or later
     source venv/bin/activate
     # On Windows, use: venv\Scripts\activate
     ```
@@ -48,7 +58,7 @@ A Python script to find and group similar images within a directory using a perc
 Run the script by providing the path to the directory you want to scan.
 
 ```bash
-python image-similarity-checker.py /path/to/your/image_directory
+python image_similarity_checker.py /path/to/your/image_directory
 ```
 
 ### Options
@@ -65,7 +75,7 @@ You can adjust the similarity sensitivity using the `--threshold` flag. This val
 **Default Threshold:** The default value for `--threshold` is `5`.
 
 ```bash
-python image-similarity-checker.py /path/to/your/images --threshold 3
+python image_similarity_checker.py /path/to/your/images --threshold 3
 ```
 
 Additional configuration flags allow you to control how the perceptual hash is generated:
@@ -82,19 +92,19 @@ Additional configuration flags allow you to control how the perceptual hash is g
 Example with custom hash parameters:
 
 ```bash
-python image-similarity-checker.py /path/to/your/images --hash-size 12 --highfreq-factor 5 --extensions .jpg .png
+python image_similarity_checker.py /path/to/your/images --hash-size 12 --highfreq-factor 5 --extensions .jpg .png
 ```
 
 To also list images that did not meet the similarity threshold, include `--show-unique`:
 
 ```bash
-python image-similarity-checker.py /path/to/your/images --show-unique
+python image_similarity_checker.py /path/to/your/images --show-unique
 ```
 
 ## Example Output
 
 ```
-$ python image-similarity-checker.py ./my_images
+$ python image_similarity_checker.py ./my_images
 Finding images...
 Found 150 images. Calculating hashes...
 Comparing images...
